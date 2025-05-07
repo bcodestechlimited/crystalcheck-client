@@ -15,6 +15,7 @@ import PartnerLayout from "./layouts/PartnerLayout";
 import GuarantorDetail from "./pages/Guarantors/GuarantorDetail";
 import Admin from "./pages/Admin/Admin";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import FieldOfficer from "./pages/FieldOfficers/FieldOfficer";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
           {
             path: "/field-officers",
             element: <FieldOfficers />,
+          },
+          {
+            path: "/field-officers/:agentId",
+            element: <FieldOfficer />,
           },
           {
             path: "/admin",

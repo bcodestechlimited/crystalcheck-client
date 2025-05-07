@@ -9,7 +9,10 @@ import {
 } from "../../store/useOfficerStore";
 import Pagination from "../../components/Pagination";
 import { BiSolidUserPin } from "react-icons/bi";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import DataTable from "../../components/data-table";
+import GuarantorCountCell from "./GuarantorCountCell";
+import AddressCountCell from "./AddressCountCell";
 
 export default function FieldOfficers() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,17 +34,56 @@ export default function FieldOfficers() {
     getAllOfficers(searchParams);
   }, [searchParams, getAllOfficers]);
 
-  const columns = [
-    { header: "FullName", accessor: "fullName" },
-    { header: "Email", accessor: "email" },
-    { header: "Gender", accessor: "gender" },
-    { header: "Phone Number", accessor: "phoneNumber" },
-    { header: "No. Guarantor", accessor: "guarantorsSubmitted" },
-    { header: "No. Address", accessor: "addressVerified" },
-  ];
+  // const columns = [
+  //   { header: "FullName", accessor: "fullName" },
+  //   { header: "Email", accessor: "email" },
+  //   { header: "Gender", accessor: "gender" },
+  //   { header: "Phone Number", accessor: "phoneNumber" },
+  //   { header: "No. Guarantor", accessor: "guarantorsSubmitted" },
+  //   { header: "No. Address", accessor: "addressVerified" },
+  // ];
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+
+  console.log({ officers });
+
+  const columns = [
+    {
+      header: "Full Name",
+      render: (row) => row?.fullName || "N/A",
+    },
+    {
+      header: "Email",
+      render: (row) => row?.email || "N/A",
+    },
+    {
+      header: "Gender",
+      render: (row) => row?.gender || "N/A",
+    },
+    {
+      header: "Phone Number",
+      render: (row) => row?.PhoneNumber || "N/A",
+    },
+    {
+      header: "No. Guarantor",
+      render: (row) =>
+        (
+          <Link to={`/field-officers/${row._id}`} className="cursor-pointer">
+            {row?.guarantorsSubmitted}
+          </Link>
+        ) || "N/A",
+    },
+    {
+      header: "No. Address",
+      render: (row) =>
+        (
+          <Link to={`/field-officers/${row._id}`} className=" cursor-pointer">
+            {row?.addressVerified}
+          </Link>
+        ) || "N/A",
+    },
+  ];
 
   return (
     <div className="mt-4 bg-white border rounded p-5">
@@ -76,7 +118,13 @@ export default function FieldOfficers() {
         refresh={() => getAllOfficers(params)}
       />
 
-      <Table columns={columns} data={officers} />
+      <DataTable
+        columns={columns}
+        data={officers}
+        noDataMessage="No data available."
+        // isLoading={isLoading}
+        // pagination={pagination}
+      />
       <Pagination
         totalPages={pagination.totalPages}
         currentPage={pagination.currentPage}

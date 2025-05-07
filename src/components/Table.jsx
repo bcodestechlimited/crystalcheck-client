@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { fetchUserLogsCount } from "../api/log.api";
 
 const getValue = (obj, path) =>
   path
@@ -65,6 +66,13 @@ export default function Table({ columns, data, linkPath }) {
             {columns.map((column) => {
               const value = getValue(row, column.accessor);
               const displayValue = getDisplayValue(column, value);
+              console.log(row);
+
+              // if (column.accessor === "guarantorsSubmitted") {
+              //   displayValue = await fetchUserLogsCount({
+              //     userId: row?.staff_id,
+              //   });
+              // }
 
               return (
                 <div
