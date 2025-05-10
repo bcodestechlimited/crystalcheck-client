@@ -9,31 +9,29 @@ const getValue = (obj, path) =>
       (acc, part) => (acc && acc[part] !== undefined ? acc[part] : "-"),
       obj
     );
+const getStatusClasses = (status = "") => {
+  const normalized = status.toLowerCase();
 
-const getStatusClasses = (status) => {
-  switch (status.toLowerCase()) {
-    case "0/2 verified":
-    case "0/2 submitted":
-    case "0/2 not match":
-      return "bg-red-100 text-red-500 px-2 py-1 rounded-full";
-    case "1/2 verified":
-    case "1/2 submitted":
-      return "bg-purple-200 text-purple-500 px-2 py-1 rounded-full";
-    case "2/2 verified":
-    case "2/2 submitted":
-    case "3/2 verified":
-    case "3/2 submitted":
-      return "bg-green-200 text-green-500 px-2 py-1 rounded-full";
-    default:
-      return "bg-gray-200 text-gray-500 px-2 py-1 rounded-full";
+  if (/^0\/[23] (verified|submitted|not match)$/.test(normalized)) {
+    return "bg-red-100 text-red-500 px-2 py-1 rounded-full";
   }
+
+  if (/^(1\/2|2\/3) (verified|submitted)$/.test(normalized)) {
+    return "bg-purple-200 text-purple-500 px-2 py-1 rounded-full";
+  }
+
+  if (/^(2\/2|3\/3) (verified|submitted)$/.test(normalized)) {
+    return "bg-green-200 text-green-500 px-2 py-1 rounded-full";
+  }
+
+  return "bg-gray-200 text-gray-500 px-2 py-1 rounded-full";
 };
 
-const getDisplayValue = (column, value) => {
+const getDisplayValue = (column, value, totalGuarantors) => {
   if (column.accessor === "submittedStatus") {
     return `${value}/2 Submitted`;
   } else if (column.accessor === "status") {
-    return `${value}/2 Verified`;
+    return `${value}/${totalGuarantors} Verified`;
   } else if (column.accessor === "notMatchStatus") {
     return `${value}/2 Not Match`;
   }
@@ -91,7 +89,13 @@ export default function CandidateTable({
 
             {columns.map((column) => {
               const value = getValue(row, column.accessor);
-              let displayValue = getDisplayValue(column, value);
+              const totalGuarantors = getValue(row, "totalGuarantors");
+              console.log({ totalGuarantors });
+              let displayValue = getDisplayValue(
+                column,
+                value,
+                totalGuarantors
+              );
               let className = "px-2 py-1";
 
               if (column.accessor === "agent") {

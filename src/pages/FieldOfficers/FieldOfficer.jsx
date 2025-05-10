@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchAgentProfile,
@@ -7,6 +7,7 @@ import {
   fetchUserLogsCount,
 } from "../../api/log.api";
 import DataTable from "../../components/data-table";
+import { MoveLeft } from "lucide-react";
 
 const PAGE_SIZE = 10;
 
@@ -67,8 +68,9 @@ export default function FieldOfficer() {
     queryFn: () =>
       fetchUserLogs({ agentId, page, limit: PAGE_SIZE, startDate, endDate }),
     enabled: !!agentId,
-    select: (res) => res?.data || { log: [], total: 0 },
   });
+
+  console.log({ logsData });
 
   const totalPages = Math.ceil(logsData?.total / PAGE_SIZE) || 1;
 
@@ -102,6 +104,9 @@ export default function FieldOfficer() {
 
   return (
     <div className="p-8 mx-auto bg-white border rounded-lg shadow-md">
+      <Link to="/field-officers" className="flex items-center mb-4">
+        <MoveLeft className="mb-4 w-10 h-10" />
+      </Link>
       <h1 className="text-2xl font-bold text-gray-800 mb-4">
         Field Officer Profile
       </h1>

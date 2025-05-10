@@ -122,8 +122,7 @@ export default function FieldOfficers() {
         columns={columns}
         data={officers}
         noDataMessage="No data available."
-        // isLoading={isLoading}
-        // pagination={pagination}
+        rowLink={(row) => `/field-officers/${row._id}`}
       />
       <Pagination
         totalPages={pagination.totalPages}

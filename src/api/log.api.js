@@ -8,7 +8,8 @@ export const fetchUserLogs = async (params) => {
       params,
     });
 
-    console.log(response.data, "user logs");
+    console.log({logs: response.data.data});
+    
 
     return response.data.data;
   } catch (error) {
@@ -29,8 +30,6 @@ export const fetchUserLogsCount = async (params) => {
       params,
     });
 
-    console.log(response.data.data, "user logs");
-
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -45,8 +44,6 @@ export const fetchAgentProfile = async (payload) => {
   const { agentId } = payload;
   try {
     const response = await axiosInstance.get(`/admin/agents/${agentId}`);
-
-    console.log({ agent: response.data.data });
 
     return response.data.data.agent;
   } catch (error) {

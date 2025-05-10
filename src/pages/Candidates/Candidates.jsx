@@ -19,9 +19,9 @@ const columns = [
   { header: "Staff ID", accessor: "staff_id" },
   { header: "Address Verified", accessor: "addressVerified" },
   { header: "AssignedTo", accessor: "agent" },
-  { header: "Submitted", accessor: "submittedStatus" },
-  { header: "Verified", accessor: "status" },
-  { header: "Not Match", accessor: "notMatchStatus" },
+  // { header: "Submitted", accessor: "submittedStatus" },
+  { header: "Guarantors Verified", accessor: "status" },
+  // { header: "Not Match", accessor: "notMatchStatus" },
 ];
 
 export default function Candidates() {
@@ -76,17 +76,15 @@ export default function Candidates() {
   };
 
   const handleApplyFilters = (filters) => {
-    saveSearchParams((prevParams) => {
-      const newParams = new URLSearchParams(prevParams);
-      Object.keys(filters)?.forEach((key) => {
-        if (filters[key]) {
-          newParams.set(key, filters[key]);
-        } else {
-          newParams.delete(key);
-        }
-      });
-      return newParams;
+    const updatedParams = new URLSearchParams(searchParams);
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        updatedParams.set(key, value);
+      } else {
+        updatedParams.delete(key);
+      }
     });
+    setSearchParams(updatedParams);
   };
 
   return (
