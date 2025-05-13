@@ -48,9 +48,10 @@ import triumphPowerAndGas from "../assets/images/companyLogos/Triumph Power and 
 import unilever from "../assets/images/companyLogos/Unilever.png";
 import vendease from "../assets/images/companyLogos/Vendease.png";
 import virginForest from "../assets/images/companyLogos/Virgin Forest.jpeg";
+import icsLogo from "../assets/images/companyLogos/ics-logo.png";
 
 export const companies = [
-  { id: 1, name: "ICS OUTSOURCING", link: "/ics/candidates" },
+  { id: 1, name: "ICS OUTSOURCING", link: "/ics/candidates", logo: icsLogo },
   { id: 2, name: "ACCION BANK", link: "", logo: accionBank },
   { id: 3, name: "ADVAPRO", link: "", logo: advapro },
   { id: 4, name: "ARCELLORMITTAL", link: "", logo: arcellormittal },
