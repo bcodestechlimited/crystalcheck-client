@@ -78,18 +78,18 @@ export default function Sidebar() {
       matchPath: "/",
     },
     {
-      to: "/field-officers",
-      title: "Field Officers",
-      activeIcon: <SquareUserRound size={18} />,
-      inactiveIcon: <SquareUserRound size={18} />,
-      matchPath: "/field-officers",
-    },
-    {
       title: `Partners (${companies.length})`,
       dropdown: true,
       activeIcon: <Users size={18} />,
       inactiveIcon: <Users size={18} />,
       children: companies,
+    },
+    user?.roles?.includes("superAdmin") && {
+      to: "/field-officers",
+      title: "Field Officers",
+      activeIcon: <SquareUserRound size={18} />,
+      inactiveIcon: <SquareUserRound size={18} />,
+      matchPath: "/field-officers",
     },
     user?.roles?.includes("superAdmin") && {
       to: "/admin",

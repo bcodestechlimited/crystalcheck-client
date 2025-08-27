@@ -20,10 +20,10 @@ export default function Button({
       {...props}
     >
       {loading ? (
-        <>
+        <span className="flex items-center">
           <Spinner />
           {loadingText}
-        </>
+        </span>
       ) : (
         text
       )}

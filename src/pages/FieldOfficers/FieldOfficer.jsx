@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -8,6 +7,7 @@ import {
 } from "../../api/log.api";
 import DataTable from "../../components/data-table";
 import { MoveLeft } from "lucide-react";
+import DeactivateOfficer from "./DeactivateOfficer";
 
 const PAGE_SIZE = 10;
 
@@ -70,8 +70,6 @@ export default function FieldOfficer() {
     enabled: !!agentId,
   });
 
-  console.log({ logsData });
-
   const totalPages = Math.ceil(logsData?.total / PAGE_SIZE) || 1;
 
   const columns = [
@@ -104,9 +102,12 @@ export default function FieldOfficer() {
 
   return (
     <div className="p-8 mx-auto bg-white border rounded-lg shadow-md">
-      <Link to="/field-officers" className="flex items-center mb-4">
-        <MoveLeft className="mb-4 w-10 h-10" />
-      </Link>
+      <div className="flex justify-between">
+        <Link to="/field-officers" className="flex items-center mb-4">
+          <MoveLeft className="mb-4 w-10 h-10" />
+        </Link>
+        <DeactivateOfficer officer={officer} />
+      </div>
       <h1 className="text-2xl font-bold text-gray-800 mb-4">
         Field Officer Profile
       </h1>
@@ -131,6 +132,18 @@ export default function FieldOfficer() {
           <p className="text-lg font-medium text-gray-900">
             {officer.phoneNumber}
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-gray-500">Active Status</p>
+          <span
+            className={`px-4 py-1 rounded-full font-semibold ${
+              officer?.isActive
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {officer?.isActive ? "Active" : "Inactive"}
+          </span>
         </div>
       </div>
 

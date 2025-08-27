@@ -22,8 +22,6 @@ export default function DataTable({
     return <div className="p-4 text-center">{noDataMessage}</div>;
   }
 
-  console.log({ pagination });
-
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -55,20 +53,39 @@ export default function DataTable({
               </>
             );
 
+            if (link) {
+              return (
+                <Link key={rowIndex} to={link} className="contents">
+                  <tr className={`hover:bg-gray-50 cursor-pointer`}>
+                    {RowContent}
+                  </tr>
+                </Link>
+              );
+            }
+
             return (
               <tr
                 key={rowIndex}
                 className={`hover:bg-gray-50 ${link ? "cursor-pointer" : ""}`}
               >
-                {link ? (
-                  <Link to={link} className="contents">
-                    {RowContent}
-                  </Link>
-                ) : (
-                  RowContent
-                )}
+                {RowContent}
               </tr>
             );
+
+            // return (
+            //   <tr
+            //     key={rowIndex}
+            //     className={`hover:bg-gray-50 ${link ? "cursor-pointer" : ""}`}
+            //   >
+            //     {link ? (
+            //       <Link to={link} className="contents">
+            //         {RowContent}
+            //       </Link>
+            //     ) : (
+            //       RowContent
+            //     )}
+            //   </tr>
+            // );
           })}
         </tbody>
       </table>
