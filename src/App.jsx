@@ -16,6 +16,8 @@ import GuarantorDetail from "./pages/Guarantors/GuarantorDetail";
 import Admin from "./pages/Admin/Admin";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import FieldOfficer from "./pages/FieldOfficers/FieldOfficer";
+import Certificates from "./pages/certificates/cerificates";
+import CertificateDetail from "./pages/certificates/certificate-detail";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,10 @@ const router = createBrowserRouter([
                     path: "/partners/ics/guarantors", // /partners/ics/guarantors route
                     element: <Guarantors />, // Guarantors component
                   },
+                  {
+                    path: "/partners/ics/certificates", // /partners/ics/certificates route
+                    element: <Certificates />, // Certificates component
+                  },
                 ],
               },
               {
@@ -59,6 +65,10 @@ const router = createBrowserRouter([
               {
                 path: "/partners/ics/guarantors/:guarantorId",
                 element: <GuarantorDetail />,
+              },
+              {
+                path: "/partners/ics/certificates/:certificateId",
+                element: <CertificateDetail />,
               },
             ],
           },
