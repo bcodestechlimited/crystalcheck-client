@@ -1,52 +1,52 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "../../components/Button";
-import Table from "../../components/Table";
 import FormModal from "./FormModal";
 import SearchInput from "../../components/SearchInput";
-import {
-  useOfficerActions,
-  useOfficerStore,
-} from "../../store/useOfficerStore";
 import Pagination from "../../components/Pagination";
 import { BiSolidUserPin } from "react-icons/bi";
 import { Link, useSearchParams } from "react-router-dom";
 import DataTable from "../../components/data-table";
-import GuarantorCountCell from "./GuarantorCountCell";
-import AddressCountCell from "./AddressCountCell";
+import { FaChevronDown, FaCheckCircle } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import { getAllAgents } from "../../api/agent.api";
 
 export default function FieldOfficers() {
   const [isOpen, setIsOpen] = useState(false);
-  const [params, setParams] = useState({});
-  const { officers, pagination, isLoading } = useOfficerStore();
-  const { getAllOfficers } = useOfficerActions();
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("All");
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Sync params with URL search params on the first mount
-  useEffect(() => {
-    const initialParams = Object.fromEntries(searchParams.entries());
-    setSearchParams(initialParams);
-    // Fetch officers with initial params
-    getAllOfficers(initialParams);
-  }, [searchParams, getAllOfficers]);
+  const page = searchParams.get("page") || 1;
+  const perPage = searchParams.get("perPage") || 10;
+  const search = searchParams.get("search") || "";
+  const status = searchParams.get("status") || ""; 
 
-  // Refetch officers when params change
-  useEffect(() => {
-    getAllOfficers(searchParams);
-  }, [searchParams, getAllOfficers]);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["get-agents", { page, perPage, search, status }],
+    queryFn: () => getAllAgents({ page, perPage, search, status }),
+  });
 
-  // const columns = [
-  //   { header: "FullName", accessor: "fullName" },
-  //   { header: "Email", accessor: "email" },
-  //   { header: "Gender", accessor: "gender" },
-  //   { header: "Phone Number", accessor: "phoneNumber" },
-  //   { header: "No. Guarantor", accessor: "guarantorsSubmitted" },
-  //   { header: "No. Address", accessor: "addressVerified" },
-  // ];
+  console.log({ data });
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  console.log({ officers });
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+    setIsOptionsOpen(false);
+
+    const lowerCaseOption = option.toLowerCase();
+
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      if (lowerCaseOption === "all") {
+        newParams.delete("status");
+      } else {
+        newParams.set("status", lowerCaseOption);
+      }
+      return newParams;
+    });
+  };
 
   const columns = [
     {
@@ -110,13 +110,14 @@ export default function FieldOfficers() {
             Field Officers
           </p>
           <p className="text-[20px] font-[700] text-secondary">
-            {pagination?.totalCount?.toLocaleString() || "0"}
+            {data?.pagination?.totalCount?.toLocaleString() || "0"}
           </p>
         </div>
       </div>
       <div className="py-4 flex items-center justify-between">
         <p className="text-3xl font-semibold text-secondary">
-          Field Officers ({pagination?.totalCount?.toLocaleString() || "0"})
+          Field Officers (
+          {data?.pagination?.totalCount?.toLocaleString() || "0"})
         </p>
         <div className="flex gap-2 relative">
           <SearchInput />
@@ -128,23 +129,58 @@ export default function FieldOfficers() {
           />
         </div>
       </div>
+
+      <div className="flex justify-end">
+        <div className="relative">
+          <div
+            className={`relative min-w-[200px] max-w-[200px] px-3 py-1 mb-4 border border-gray-300 rounded-lg font-semibold flex items-center justify-between cursor-pointer`}
+            onClick={() => setIsOptionsOpen((prev) => !prev)}
+          >
+            <span
+              className={`capitalize ${!selectedOption ? "text-gray-400" : ""}`}
+            >
+              {status || selectedOption || "All"}
+            </span>
+            <FaChevronDown className="text-gray-500" />
+          </div>
+          {isOptionsOpen && (
+            <ul className="absolute top-10 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10 overflow-y-auto ">
+              {["All", "Active", "Inactive"].map((option, index) => (
+                <li
+                  key={index}
+                  className=" flex items-center justify-between px-4 py-2 font-semibold text-secondary hover:bg-gray-100 cursor-pointer capitalize"
+                  onClick={() => handleOptionClick(option)}
+                >
+                  {option}
+                  {selectedOption === option && (
+                    <FaCheckCircle className="text-primary" />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
       <FormModal
         isOpen={isOpen}
         onClose={closeModal}
-        refresh={() => getAllOfficers(params)}
+        refresh={() => refetch({ page: 1, perPage, search, status })}
       />
 
       <DataTable
         columns={columns}
-        data={officers}
+        data={data?.officers || []}
         noDataMessage="No data available."
         rowLink={(row) => `/field-officers/${row._id}`}
       />
       <Pagination
-        totalPages={pagination.totalPages}
-        currentPage={pagination.currentPage}
+        totalPages={data?.pagination?.totalPages || 1}
+        currentPage={data?.pagination?.currentPage || 1}
         isLoading={isLoading}
-        onPageChange={(page) => setParams({ ...params, page })}
+        onPageChange={(page) => {
+          setSearchParams((prev) => ({ ...prev, page }));
+        }}
       />
     </div>
   );
