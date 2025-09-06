@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import Loader from "../../components/Loader";
 import { getCertificate } from "../../api/certificate.api";
 import VerifyCertificateModal from "./verify-certificate-modal";
+import { formatPrettyDate } from "../../utils/formatter";
 
 const DetailSection = ({ title, children }) => (
   <div className="border p-2 rounded">
@@ -22,27 +23,38 @@ const DetailRow = ({
   endValue,
   isEndValueLink,
 }) => (
-  <div className="py-2 flex justify-between">
+  <div key={label} className="py-2 flex justify-between">
     <div className="flex flex-col gap-2">
       <p>{label}</p>
-      <p
-        className={`font-semibold ${
-          isValueLink ? "text-blue-600 underline" : ""
-        }`}
-      >
-        {value || "N/A"}
-      </p>
-    </div>
-    {endLabel && (
-      <div className="flex flex-col items-end gap-4">
-        <p>{endLabel}</p>
-        <p
-          className={`font-semibold ${
-            isEndValueLink ? "text-blue-600 underline" : ""
-          }`}
+      {isValueLink ? (
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-blue-600 underline"
         >
-          {endValue || "N/A"}
-        </p>
+          View
+        </a>
+      ) : (
+        <p className="font-semibold capitalize">{value || "N/A"}</p>
+      )}
+    </div>
+
+    {endLabel && (
+      <div key={endLabel} className="flex flex-col items-end gap-4">
+        <p>{endLabel}</p>
+        {isEndValueLink ? (
+          <a
+            href={endValue}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-blue-600 underline"
+          >
+            View
+          </a>
+        ) : (
+          <p className="font-semibold capitalize">{endValue || "N/A"}</p>
+        )}
       </div>
     )}
   </div>
@@ -60,8 +72,26 @@ export default function CertificateDetail() {
 
   const certificate = data?.certificate;
 
+  const status = {
+    pending: {
+      color: "text-gray-500 bg-gray-100 px-2 py-1 rounded-full",
+      text: "Pending",
+    },
+    verified: {
+      color: "text-green-500 bg-green-100 px-2 py-1 rounded-full",
+      text: "Verified",
+    },
+    fake: {
+      color: "text-red-500 bg-red-100 px-2 py-1 rounded-full",
+      text: "Fake",
+    },
+    forged: {
+      color: "text-red-500 bg-red-100 px-2 py-1 rounded-full",
+      text: "Forged",
+    },
+  };
+
   console.log({ certificate });
-  
 
   if (isLoading) {
     return <Loader />;
@@ -133,8 +163,56 @@ export default function CertificateDetail() {
                 label="Remark"
                 value={certificate?.remark}
                 endLabel="Date Verified"
-                endValue={certificate?.dateVerified}
+                endValue={formatPrettyDate(certificate?.dateVerified)}
               />
+              {/* <DetailRow
+                label="Method Of Verification"
+                value={certificate?.methodOfVerification}
+                endLabel="Verification Status"
+                endValue={certificate?.verificationStatus}
+              /> */}
+
+              <div className="py-2 flex justify-between">
+                <div className="flex flex-col gap-2">
+                  <p>Method Of Verification</p>
+                  <p className="font-semibold capitalize">
+                    {certificate?.methodOfVerification ?? "N/A"}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end gap-4">
+                  <p>Verification Status</p>
+                  <p
+                    className={`font-semibold capitalize ${
+                      status[certificate?.verificationStatus]?.color ??
+                      "text-gray-500 bg-gray-100 px-2 py-1 rounded-full"
+                    }`}
+                  >
+                    {certificate?.verificationStatus}
+                  </p>
+                </div>
+              </div>
+            </DetailSection>
+
+            <DetailSection title="Documents">
+              {certificate?.candidateId?.credentials &&
+              certificate?.candidateId?.credentials.length > 0 ? (
+                certificate?.candidateId?.credentials.map(
+                  (eachCredential, i) => {
+                    console.log({ eachCredential });
+
+                    return (
+                      <DetailRow
+                        key={i}
+                        label={eachCredential.document_type}
+                        value={eachCredential.credential}
+                        isValueLink
+                      />
+                    );
+                  }
+                )
+              ) : (
+                <p>No documents found for this candidate</p>
+              )}
             </DetailSection>
           </div>
         </div>

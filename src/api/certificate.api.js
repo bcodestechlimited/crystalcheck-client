@@ -2,9 +2,9 @@ import { AxiosError } from "axios";
 import axiosInstance from "../utils/axios.config";
 import { handleError } from "../utils/handleError";
 
-export const getCertificates = async () => {
+export const getCertificates = async (params) => {
   try {
-    const response = await axiosInstance.get(`/admin/certificates`);
+    const response = await axiosInstance.get(`/admin/certificates`, { params });
     return response.data.data;
   } catch (error) {
     if (error instanceof AxiosError) {
