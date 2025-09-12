@@ -5,7 +5,7 @@ import CustomAlert from "../../components/custom-alert";
 import { updateCertificate } from "../../api/certificate.api";
 import Button from "../../components/Button";
 
-const methodsOfVerification = ["convocation-booklet", "school-correspondence"];
+const methodsOfVerification = ["convocation-booklet", "cci-database"];
 const verificationStatus = ["verified", "forged", "fake"];
 
 export default function VerifyCertificateModal({
