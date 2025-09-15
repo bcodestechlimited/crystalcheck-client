@@ -84,6 +84,8 @@ export default function Certificates() {
     queryFn: () => getCertificates({ page, perPage, search }),
   });
 
+  console.log({ isLoading });
+
   console.log({ data });
 
   return (
@@ -92,7 +94,9 @@ export default function Certificates() {
         <div className="flex bg-[#F3FAFF] px-8 py-8 gap-x-4 flex-1 items-center rounded-lg">
           <BsPeopleFill className="text-primary" size={44} />
           <div>
-            <p className="text-[16px] font-[500] text-secondary">Guarantors</p>
+            <p className="text-[16px] font-[500] text-secondary">
+              Certificates
+            </p>
             <p className="text-[20px] font-[700] text-secondary">
               {data?.pagination.totalCount?.toLocaleString() || "0"}
             </p>
@@ -114,7 +118,7 @@ export default function Certificates() {
       <DataTable
         columns={columns}
         data={data?.certificates || []}
-        loading={isLoading}
+        isLoading={isLoading}
       />
       <Pagination
         totalPages={data?.pagination.totalPages || 1}
