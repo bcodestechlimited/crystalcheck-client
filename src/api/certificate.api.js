@@ -45,3 +45,22 @@ export const updateCertificate = async (certificateId, payload) => {
     throw error;
   }
 };
+
+export const exportCertificatesToCSV = async (params) => {
+  try {
+    console.log({ params });
+
+    const response = await axiosInstance.get(`/admin/certificates/export`, {
+      params,
+    });
+
+    console.log({ data: response.data });
+
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "Something went wrong");
+    }
+    throw error;
+  }
+};

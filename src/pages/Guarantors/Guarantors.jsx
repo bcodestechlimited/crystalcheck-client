@@ -11,6 +11,8 @@ import Button from "../../components/Button";
 import AgentSearchModal from "./AgentSearchModal";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import { Download } from "lucide-react";
+import ExportGuarantor from "./_components/export-guarantor";
 
 const columns = [
   { header: "Name", accessor: "name" },
@@ -27,6 +29,7 @@ export default function Guarantors() {
   const { guarantors, pagination, isLoading } = useGuarantorStore();
   const { getAllGuarantors, assignGuarantors } = useGuarantorActions();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openExportModal, setOpenExportModal] = useState(true);
 
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
@@ -91,18 +94,26 @@ export default function Guarantors() {
         </p>
 
         <div className="flex gap-2 relative">
-          <Button
-            text="Assign"
-            onClick={() => setIsOpen(true)}
-            className="bg-primary text-white px-4 rounded font-semibold"
-          />
           <AgentSearchModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
             handleAssign={handleAssign}
           />
-
           <SearchInput />
+          <Button
+            text="Assign"
+            onClick={() => setIsOpen(true)}
+            className="bg-primary text-white px-4 rounded font-semibold"
+          />
+          <Button
+            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
+            onClick={() => setOpenExportModal(true)}
+            text={
+              <span className="flex items-center gap-2 min-w-28">
+                <Download size={18} /> Export CSV
+              </span>
+            }
+          />
         </div>
       </div>
       <GuarantorsTable
@@ -117,6 +128,11 @@ export default function Guarantors() {
         totalPages={pagination.totalPages}
         currentPage={pagination.currentPage}
         isLoading={isLoading}
+      />
+
+      <ExportGuarantor
+        isOpen={openExportModal}
+        onClose={() => setOpenExportModal(false)}
       />
     </div>
   );

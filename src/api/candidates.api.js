@@ -41,3 +41,18 @@ export const getCandidate = async (staffId, update = "false") => {
     throw error;
   }
 };
+
+export const exportCandidatesToCSV = async (params) => {
+  try {
+    const response = await axiosInstance.get(`/admin/candidates/export`, {
+      params,
+    });
+
+    return response.data?.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(error.response?.data?.message || "Something went wrong");
+    }
+    throw error;
+  }
+};

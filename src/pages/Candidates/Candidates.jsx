@@ -12,6 +12,8 @@ import CandidateTable from "./CandidateTable";
 import AgentSearchModal from "../Guarantors/AgentSearchModal";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
+import { Download } from "lucide-react";
+import ExportCandidates from "./_components/export-candidates";
 
 const columns = [
   { header: "Surname", accessor: "data.surname" },
@@ -27,6 +29,7 @@ const columns = [
 export default function Candidates() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedCandidates, setSelectedCandidates] = useState({});
+  const [openExportModal, setOpenExportModal] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const { candidates, pagination, isLoading } = useCandidateStore();
   const { getAllCandidates, assignCandidates } = useCandiateActions();
@@ -107,11 +110,6 @@ export default function Candidates() {
         </p>
 
         <div className=" flex gap-2 relative">
-          <Button
-            text="Assign"
-            onClick={() => setIsOpen(true)}
-            className="bg-primary text-white px-4 rounded font-semibold"
-          />
           <AgentSearchModal
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
@@ -128,6 +126,20 @@ export default function Candidates() {
             onClose={() => setIsFilterModalOpen(false)}
             onApply={handleApplyFilters}
           />
+          <Button
+            text="Assign"
+            onClick={() => setIsOpen(true)}
+            className="bg-primary text-white px-4 rounded font-semibold"
+          />
+          <Button
+            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
+            onClick={() => setOpenExportModal(true)}
+            text={
+              <span className="flex items-center gap-2 min-w-28">
+                <Download size={18} /> Export CSV
+              </span>
+            }
+          />
         </div>
       </div>
       <CandidateTable
@@ -142,6 +154,11 @@ export default function Candidates() {
         totalPages={pagination.totalPages}
         currentPage={pagination.currentPage}
         isLoading={isLoading}
+      />
+
+      <ExportCandidates
+        isOpen={openExportModal}
+        onClose={() => setOpenExportModal(false)}
       />
     </div>
   );

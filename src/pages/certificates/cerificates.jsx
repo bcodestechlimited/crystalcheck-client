@@ -5,6 +5,10 @@ import { getCertificates } from "../../api/certificate.api";
 import DataTable from "../../components/data-table";
 import { BsPeopleFill } from "react-icons/bs";
 import SearchInput from "../../components/SearchInput";
+import { useState } from "react";
+import Button from "../../components/Button";
+import { Download } from "lucide-react";
+import ExportToCSVModal from "./_components/export-to-csv";
 
 const columns = [
   {
@@ -74,6 +78,7 @@ const columns = [
 
 export default function Certificates() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openExportModal, setOpenExportModal] = useState(true);
 
   const page = searchParams.get("page") || 1;
   const perPage = searchParams.get("perPage") || 10;
@@ -112,6 +117,15 @@ export default function Certificates() {
 
         <div className="flex gap-2 relative">
           <SearchInput />
+          <Button
+            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg"
+            onClick={() => setOpenExportModal(true)}
+            text={
+              <span className="flex items-center gap-2 min-w-28">
+                <Download size={18} /> Export CSV
+              </span>
+            }
+          />
         </div>
       </div>
 
@@ -124,6 +138,12 @@ export default function Certificates() {
         totalPages={data?.pagination.totalPages || 1}
         currentPage={data?.pagination.currentPage}
         isLoading={isLoading}
+      />
+
+      {/* Export Modal */}
+      <ExportToCSVModal
+        isOpen={openExportModal}
+        onClose={() => setOpenExportModal(false)}
       />
     </div>
   );
